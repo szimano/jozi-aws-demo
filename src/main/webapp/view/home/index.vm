@@ -1,0 +1,23 @@
+#layout('default')
+
+#region('content')
+    <h1>Welcome to AWS Demo!</h1>
+
+    <div class="well">
+        <ul>
+            #{foreach}($msg in $messages)
+                <li>$msg</li>
+            #{end}
+        </ul>
+    </div>
+
+    <div class="well">
+        <form method="POST" action="$tag.formAction('home', 'addMessage')">
+            <label value="Room"/>
+            <input type="text" name="room" />
+            <label value="Message"/>
+            <input type="text" name="content" />
+            <input type="submit" value="Add" />
+        </form>
+    </div>
+#end

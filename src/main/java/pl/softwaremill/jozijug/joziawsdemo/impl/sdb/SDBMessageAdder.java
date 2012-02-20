@@ -1,0 +1,52 @@
+package pl.softwaremill.jozijug.joziawsdemo.impl.sdb;
+
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.SetMultimap;
+import com.xerox.amazonws.simpledb.SDBException;
+import org.jboss.seam.solder.core.Veto;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.format.ISODateTimeFormat;
+import pl.softwaremill.jozijug.joziawsdemo.MessageMappingConstants;
+import pl.softwaremill.jozijug.joziawsdemo.entity.Message;
+import pl.softwaremill.jozijug.joziawsdemo.service.MessageAdder;
+
+import java.util.Map;
+import java.util.Set;
+
+/**
+ * @author Adam Warski (adam at warski dot org)
+ */
+@Veto
+public class SDBMessageAdder implements MessageAdder {
+    private final MessagesDomainProvider messagesDomainProvider;
+
+    public SDBMessageAdder(MessagesDomainProvider messagesDomainProvider) {
+        this.messagesDomainProvider = messagesDomainProvider;
+    }
+
+    @Override
+    public void addMessage(Message msg) {
+        System.out.println("Adding message: " + msg);
+
+        if (msg.getSaveDate() == null)
+            msg.setSaveDate(new DateTime());
+
+        SetMultimap<String, String> attrs = HashMultimap.create();
+        attrs.put(MessageMappingConstants.ROOM, msg.getRoom());
+        attrs.put(MessageMappingConstants.CONTENT, msg.getContent());
+        attrs.put(MessageMappingConstants.DATE,
+                ISODateTimeFormat.dateTimeNoMillis().withZone(DateTimeZone.UTC).print(msg.getDate()));
+        attrs.put(MessageMappingConstants.SAVE_DATE,
+                ISODateTimeFormat.dateTimeNoMillis().withZone(DateTimeZone.UTC).print(msg.getSaveDate()));
+
+        try {
+            String itemId = msg.getUuid();
+            Map<String,Set<String>> itemAttr = (Map<String,Set<String>>) (Map) attrs.asMap();
+
+            messagesDomainProvider.getDomain().addItem(itemId, itemAttr, null);
+        } catch (SDBException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}
