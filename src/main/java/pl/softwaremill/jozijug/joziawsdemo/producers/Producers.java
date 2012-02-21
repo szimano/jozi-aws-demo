@@ -11,15 +11,15 @@ import pl.softwaremill.jozijug.joziawsdemo.impl.sdb.MessagesDomainProvider;
 import pl.softwaremill.jozijug.joziawsdemo.impl.sdb.SDBMessageAdder;
 import pl.softwaremill.jozijug.joziawsdemo.impl.sdb.SDBMessageLister;
 import pl.softwaremill.jozijug.joziawsdemo.impl.sqs.SQSQueueService;
-import pl.softwaremill.jozijug.joziawsdemo.service.MessageAdder;
-import pl.softwaremill.jozijug.joziawsdemo.service.MessagesLister;
-import pl.softwaremill.jozijug.joziawsdemo.service.QueueService;
+import pl.softwaremill.jozijug.joziawsdemo.service.*;
 
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.transaction.UserTransaction;
 import java.io.IOException;
 
 /**
@@ -27,36 +27,54 @@ import java.io.IOException;
  */
 public class Producers {
 
-    @PersistenceContext
-    private EntityManager entityManager;
+    @Inject
+    @Local
+    Instance<MessagesLister> localMessageLister;
 
     @Inject
-    private MessagesDomainProvider messagesDomainProvider;
+    @AWS
+    Instance<MessagesLister> awsMessageLister;
+
+    @Inject
+    @Local
+    Instance<MessageAdder> localMessageAdder;
+
+    @Inject
+    @AWS
+    Instance<MessageAdder> awsMessageAdder;
+
+    @Inject
+    @Local
+    Instance<QueueService> localQueueService;
+
+    @Inject
+    @AWS
+    Instance<QueueService> awsQueueService;
 
     @Produces
     private MessageAdder createMessageAdder() {
-        if (System.getProperty("local") == null) {
-            return new SDBMessageAdder(messagesDomainProvider);
+        if (System.getProperty("local") != null) {
+            return localMessageAdder.get();
         } else {
-            return new HibernateMessageAdder(entityManager);
+            return awsMessageAdder.get();
         }
     }
 
     @Produces
     private MessagesLister createMessageLister() {
-        if (System.getProperty("local") == null) {
-            return new SDBMessageLister(messagesDomainProvider);
+        if (System.getProperty("local") != null) {
+            return localMessageLister.get();
         } else {
-            return new HibernateMessageLister(entityManager);
+            return awsMessageLister.get();
         }
     }
 
     @Produces
     private QueueService createQueueService() {
-        if (System.getProperty("local") == null) {
-            return new SQSQueueService();
+        if (System.getProperty("local") != null) {
+            return localQueueService.get();
         } else {
-            return new JMSQueueService();
+            return awsQueueService.get();
         }
     }
 }

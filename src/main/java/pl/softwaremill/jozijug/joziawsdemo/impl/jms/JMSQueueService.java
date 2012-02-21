@@ -2,6 +2,7 @@ package pl.softwaremill.jozijug.joziawsdemo.impl.jms;
 
 import org.jboss.seam.solder.core.Veto;
 import pl.softwaremill.jozijug.joziawsdemo.entity.Message;
+import pl.softwaremill.jozijug.joziawsdemo.service.Local;
 import pl.softwaremill.jozijug.joziawsdemo.service.QueueService;
 
 import javax.jms.*;
@@ -10,7 +11,7 @@ import javax.naming.InitialContext;
 /**
  * User: szimano
  */
-@Veto
+@Local
 public class JMSQueueService implements QueueService {
 
     @Override
@@ -21,7 +22,7 @@ public class JMSQueueService implements QueueService {
             try {
                 initialContext = new InitialContext();
 
-                Queue queue = (Queue) initialContext.lookup("java:comp/env/jms/queues/MessageQueue");
+                Queue queue = (Queue) initialContext.lookup("java:/queues/MessageQueue");
 
                 ConnectionFactory cf = (ConnectionFactory) initialContext.lookup("/ConnectionFactory");
 
@@ -57,7 +58,7 @@ public class JMSQueueService implements QueueService {
             try {
                 initialContext = new InitialContext();
 
-                Queue queue = (Queue) initialContext.lookup("java:comp/env/jms/queues/MessageQueue");
+                Queue queue = (Queue) initialContext.lookup("java:/queues/MessageQueue");
 
                 ConnectionFactory cf = (ConnectionFactory) initialContext.lookup("/ConnectionFactory");
 

@@ -2,11 +2,13 @@ package pl.softwaremill.jozijug.joziawsdemo.impl.sdb;
 
 import com.xerox.amazonws.simpledb.Item;
 import com.xerox.amazonws.simpledb.SDBException;
-import org.jboss.seam.solder.core.Veto;
-import org.joda.time.format.ISODateTimeFormat;
 import pl.softwaremill.jozijug.joziawsdemo.entity.Message;
+import pl.softwaremill.jozijug.joziawsdemo.service.AWS;
 import pl.softwaremill.jozijug.joziawsdemo.service.MessagesLister;
 
+import javax.inject.Inject;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -16,12 +18,16 @@ import static pl.softwaremill.jozijug.joziawsdemo.MessageMappingConstants.*;
 /**
  * @author Adam Warski (adam at warski dot org)
  */
-@Veto
+@AWS
 public class SDBMessageLister implements MessagesLister {
     private final MessagesDomainProvider messagesDomainProvider;
 
-    public SDBMessageLister(MessagesDomainProvider messagesDomainProvider) {
+    private DateFormatter dateFormatter;
+
+    @Inject
+    public SDBMessageLister(MessagesDomainProvider messagesDomainProvider, DateFormatter dateFormatter) {
         this.messagesDomainProvider = messagesDomainProvider;
+        this.dateFormatter = dateFormatter;
     }
 
     @Override
@@ -56,12 +62,17 @@ public class SDBMessageLister implements MessagesLister {
     }
 
     private Message convertItemToMessage(Item item) {
-        return new Message(
-                UUID.fromString(item.getIdentifier()),
-                item.getAttribute(ROOM),
-                item.getAttribute(CONTENT),
-                ISODateTimeFormat.dateTimeNoMillis().parseDateTime(item.getAttribute(DATE)),
-                ISODateTimeFormat.dateTimeNoMillis().parseDateTime(item.getAttribute(SAVE_DATE))
-        );
+        try {
+            return new Message(
+                    UUID.fromString(item.getIdentifier()),
+                    item.getAttribute(ROOM),
+                    item.getAttribute(CONTENT),
+                    dateFormatter.getDateFormat().parse(item.getAttribute(DATE)),
+                    dateFormatter.getDateFormat().parse(item.getAttribute(SAVE_DATE))
+            );
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
     }
+
 }

@@ -1,12 +1,12 @@
 package pl.softwaremill.jozijug.joziawsdemo.controller;
 
-import org.joda.time.DateTime;
 import pl.softwaremill.asamal.controller.AsamalContext;
 import pl.softwaremill.asamal.controller.ControllerBean;
 import pl.softwaremill.asamal.controller.annotation.Controller;
 import pl.softwaremill.asamal.controller.annotation.Get;
 import pl.softwaremill.asamal.controller.annotation.Json;
 import pl.softwaremill.asamal.controller.annotation.Post;
+import pl.softwaremill.jozijug.joziawsdemo.QueueListener;
 import pl.softwaremill.jozijug.joziawsdemo.entity.Message;
 import pl.softwaremill.jozijug.joziawsdemo.service.MessagesLister;
 import pl.softwaremill.jozijug.joziawsdemo.service.QueueService;
@@ -32,7 +32,8 @@ public class Home extends ControllerBean implements Serializable {
     @Get
     public void index() {
 
-        List<Message> messages = messagesLister.listRecentMessages(getParameter("room"));
+        List<Message> messages = messagesLister.listRecentMessages("room");
+        System.out.println("messages = " + messages);
 
         setParameter("messages", messages);
     }
@@ -41,13 +42,21 @@ public class Home extends ControllerBean implements Serializable {
     public void addMessage() {
         Message message = new Message(
                 UUID.randomUUID(),
-                getParameter("room"),
+                "room",
                 getParameter("content"),
-                new DateTime(),
+                new Date(),
                 null
         );
 
         queueService.sendMessage(message);
+    }
+
+    @Post
+    public void reloadMessages() {
+        List<Message> messages = messagesLister.listRecentMessages("room");
+        System.out.println("messages = " + messages);
+
+        setParameter("messages", messages);
     }
 
     @Json

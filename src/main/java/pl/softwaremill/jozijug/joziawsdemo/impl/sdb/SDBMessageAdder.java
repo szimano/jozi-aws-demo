@@ -4,25 +4,29 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 import com.xerox.amazonws.simpledb.SDBException;
 import org.jboss.seam.solder.core.Veto;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.format.ISODateTimeFormat;
 import pl.softwaremill.jozijug.joziawsdemo.MessageMappingConstants;
 import pl.softwaremill.jozijug.joziawsdemo.entity.Message;
+import pl.softwaremill.jozijug.joziawsdemo.service.AWS;
 import pl.softwaremill.jozijug.joziawsdemo.service.MessageAdder;
 
+import javax.inject.Inject;
+import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
 /**
  * @author Adam Warski (adam at warski dot org)
  */
-@Veto
+@AWS
 public class SDBMessageAdder implements MessageAdder {
     private final MessagesDomainProvider messagesDomainProvider;
 
-    public SDBMessageAdder(MessagesDomainProvider messagesDomainProvider) {
+    private DateFormatter dateFormatter;
+
+    @Inject
+    public SDBMessageAdder(MessagesDomainProvider messagesDomainProvider, DateFormatter dateFormatter) {
         this.messagesDomainProvider = messagesDomainProvider;
+        this.dateFormatter = dateFormatter;
     }
 
     @Override
@@ -30,15 +34,15 @@ public class SDBMessageAdder implements MessageAdder {
         System.out.println("Adding message: " + msg);
 
         if (msg.getSaveDate() == null)
-            msg.setSaveDate(new DateTime());
+            msg.setSaveDate(new Date());
 
         SetMultimap<String, String> attrs = HashMultimap.create();
         attrs.put(MessageMappingConstants.ROOM, msg.getRoom());
         attrs.put(MessageMappingConstants.CONTENT, msg.getContent());
         attrs.put(MessageMappingConstants.DATE,
-                ISODateTimeFormat.dateTimeNoMillis().withZone(DateTimeZone.UTC).print(msg.getDate()));
+                dateFormatter.getDateFormat().format(msg.getDate()));
         attrs.put(MessageMappingConstants.SAVE_DATE,
-                ISODateTimeFormat.dateTimeNoMillis().withZone(DateTimeZone.UTC).print(msg.getSaveDate()));
+                dateFormatter.getDateFormat().format(msg.getSaveDate()));
 
         try {
             String itemId = msg.getUuid();

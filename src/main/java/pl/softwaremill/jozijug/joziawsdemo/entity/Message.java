@@ -1,17 +1,15 @@
 package pl.softwaremill.jozijug.joziawsdemo.entity;
 
-import org.joda.time.DateTime;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.UUID;
 
 /**
  * @author Adam Warski (adam at warski dot org)
  */
 @Entity
+@Table(name = "Message")
 public class Message implements Serializable {
 
     @Id
@@ -24,15 +22,17 @@ public class Message implements Serializable {
     private String content;
 
     @Column
-    private DateTime date;
+    @Temporal(TemporalType.TIME)
+    private Date date;
 
     @Column
-    private DateTime saveDate;
+    @Temporal(TemporalType.TIME)
+    private Date saveDate;
 
     public Message() {
     }
 
-    public Message(UUID uuid, String room, String content, DateTime date, DateTime saveDate) {
+    public Message(UUID uuid, String room, String content, Date date, Date saveDate) {
         this.uuid = uuid.toString();
         this.room = room;
         this.content = content;
@@ -52,7 +52,7 @@ public class Message implements Serializable {
         return content;
     }
 
-    public DateTime getDate() {
+    public Date getDate() {
         return date;
     }
 
@@ -68,15 +68,15 @@ public class Message implements Serializable {
         this.content = content;
     }
 
-    public void setDate(DateTime date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
-    public DateTime getSaveDate() {
+    public Date getSaveDate() {
         return saveDate;
     }
 
-    public void setSaveDate(DateTime saveDate) {
+    public void setSaveDate(Date saveDate) {
         this.saveDate = saveDate;
     }
 

@@ -1,0 +1,9 @@
+Start JBoss AS 7.1+
+
+ ./standalone.sh [-Dlocal] --server-config=standalone-full.xml
+
+The optional '''-Dlocal''' will use JPA/JMS services instead of SDB/SQS
+
+Deploy JMS queue with
+
+ add-jms-queue --name=JoziJUGQueue --entries=queues/MessageQueue

@@ -3,21 +3,26 @@
 #region('content')
     <h1>Welcome to AWS Demo!</h1>
 
-    <div class="well">
-        <ul>
+    <div id="msgs">
             #{foreach}($msg in $messages)
-                <li>$msg</li>
+                <div class="row-fluid" class="well">
+                    <div class="span12">
+                        $msg.content
+                        <div class="row-fluid">
+                            <div class="span6"><b>Sent:</b> $msg.date</div>
+                            <div class="span6"><b>Saved:</b> $msg.saveDate</div>
+                        </div>
+                    </div>
+                </div>
             #{end}
-        </ul>
     </div>
 
     <div class="well">
         <form method="POST" action="$tag.formAction('home', 'addMessage')">
-            <label value="Room"/>
-            <input type="text" name="room" />
-            <label value="Message"/>
+            <label>Message</label>
             <input type="text" name="content" />
             <input type="submit" value="Add" />
+            <input type="submit" value="Reload" onclick="return $tag.reRender("home", "reloadMessages", "''", "'msgs'")"/>
         </form>
     </div>
 #end

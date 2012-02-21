@@ -4,12 +4,13 @@ import org.jboss.seam.solder.core.Veto;
 import pl.softwaremill.common.sqs.SQSManager;
 import pl.softwaremill.common.sqs.util.SQSAnswer;
 import pl.softwaremill.jozijug.joziawsdemo.entity.Message;
+import pl.softwaremill.jozijug.joziawsdemo.service.AWS;
 import pl.softwaremill.jozijug.joziawsdemo.service.QueueService;
 
 /**
  * @author Adam Warski (adam at warski dot org)
  */
-@Veto
+@AWS
 public class SQSQueueService implements QueueService {
     private static final String SQS_MESSAGES_QUEUE = "messages";
 
