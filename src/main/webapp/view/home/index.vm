@@ -1,11 +1,20 @@
 #layout('default')
 
 #region('content')
+    <script type="text/javascript">
+        function refreshMessages() {
+            $tag.reRender("home", "reloadMessages", "''", "'msgs'");
+        }
+
+        // refresh messages every 500 seconds
+        window.setInterval(refreshMessages, 500);
+    </script>
+
     <h1>Welcome to AWS Demo!</h1>
 
     <div id="msgs">
             #{foreach}($msg in $messages)
-                <div class="row-fluid" class="well">
+                <div class="row-fluid well">
                     <div class="span12">
                         $msg.content
                         <div class="row-fluid">
@@ -22,7 +31,6 @@
             <label>Message</label>
             <input type="text" name="content" />
             <input type="submit" value="Add" />
-            <input type="submit" value="Reload" onclick="return $tag.reRender("home", "reloadMessages", "''", "'msgs'")"/>
         </form>
     </div>
 #end
