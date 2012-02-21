@@ -117,4 +117,36 @@
         </dependency>
 
     </dependencies>
+
+    <profiles>
+        <profile>
+            <id>lg</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>1.2</version>
+                        <executions>
+                            <execution>
+                                <id>run-load-generator</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <classpathScope>test</classpathScope>
+                            <executable>java</executable>
+                            <arguments>
+                                <argument>-classpath</argument>
+                                <classpath/>
+                                <argument>pl.softwaremill.jozijug.joziawsdemo.tools.LoadGenerator</argument>
+                            </arguments>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

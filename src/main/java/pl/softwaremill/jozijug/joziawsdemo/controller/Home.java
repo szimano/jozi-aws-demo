@@ -38,12 +38,23 @@ public class Home extends ControllerBean implements Serializable {
         setParameter("messages", messages);
     }
 
+    @Get
+    public void addMessageByGet() {
+        addNewMessage(getParameter("content"));
+
+        redirect("index");
+    }
+
     @Post
     public void addMessage() {
+        addNewMessage(getParameter("content"));
+    }
+
+    private void addNewMessage(String content) {
         Message message = new Message(
                 UUID.randomUUID(),
                 "room",
-                getParameter("content"),
+                content,
                 new Date(),
                 null
         );
