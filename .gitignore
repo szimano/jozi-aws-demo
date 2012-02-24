@@ -15,3 +15,5 @@ conf_install
 *.iml
 .idea
 velocity.log
+aws.properties
+sqs.conf

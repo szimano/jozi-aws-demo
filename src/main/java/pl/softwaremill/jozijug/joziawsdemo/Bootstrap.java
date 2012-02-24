@@ -1,5 +1,7 @@
 package pl.softwaremill.jozijug.joziawsdemo;
 
+import pl.softwaremill.jozijug.joziawsdemo.impl.sdb.AwsAccessKeys;
+
 import javax.inject.Inject;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -15,6 +17,9 @@ public class Bootstrap implements ServletContextListener {
 
     @Inject
     private QueueListener queueListener;
+
+    @Inject
+    private AwsAccessKeys awsAccessKeys;
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {

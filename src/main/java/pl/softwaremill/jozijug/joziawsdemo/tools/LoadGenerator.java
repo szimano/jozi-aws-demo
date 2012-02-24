@@ -36,7 +36,7 @@ public class LoadGenerator {
 
             System.out.println("Sending message " + content);
 
-            URI uri = URIUtils.createURI("http", "localhost", 8080, "/jozi-aws-demo-1.0-SNAPSHOT/home/addMessageByGet",
+            URI uri = URIUtils.createURI("http", "localhost", 8080, "/jozi-aws-demo/home/addMessageByGet",
                     URLEncodedUtils.format(qparams, "UTF-8"), null);
             HttpGet get = new HttpGet(uri);
 
