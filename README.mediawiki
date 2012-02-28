@@ -1,9 +1,47 @@
+= Jozi JUG AWS sample application =
+
+== Setup JBoss ==
 Start JBoss AS 7.1+
 
- ./standalone.sh [-Dlocal] --server-config=standalone-full.xml
+Fix the slf4j module, by editing ${JBOSS_HOME}/modules/org/jboss/logging/main/module.xml and add those two to the dependencies:
 
-The optional '''-Dlocal''' will use JPA/JMS services instead of SDB/SQS
+    <module name="org.apache.log4j"/>
+    <module name="org.slf4j"/>
+
+'' This might be fixed by JBoss one day, but still for JBoss AS 7.1-Final does not work properly''
+
+== Build & Deploy the war ==
+
+Build the project with
+
+ mvn clean install
+
+And put '''target/jozi-aws-demo-1-SNAPSHOT.war''' in ''''${JBOSS_HOME}/standalone/deployments'''
+
+== Run the application ==
+
+=== JMS & Hibernate version ===
+
+Run the server with
+
+ ./standalone.sh -Dlocal --server-config=standalone-full.xml
 
 Deploy JMS queue with
 
  add-jms-queue --name=JoziJUGQueue --entries=queues/MessageQueue
+
+This will use JPA/JMS services.
+
+=== SQS & SDB version ===
+
+Fill in aws.properties and sqs.conf in the resources folder (use .sample files)
+
+Create an empty '''messages''' domain in SDB.
+
+Run the server with
+
+ ./standalone.sh
+
+== Access the application ==
+
+Go to [http://localhost:8080/jozi-aws-demo-1-SNAPSHOT/home/index http://localhost:8080/jozi-aws-demo-1-SNAPSHOT/home/index]

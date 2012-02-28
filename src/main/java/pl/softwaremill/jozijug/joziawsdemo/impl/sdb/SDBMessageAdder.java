@@ -3,7 +3,6 @@ package pl.softwaremill.jozijug.joziawsdemo.impl.sdb;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 import com.xerox.amazonws.simpledb.SDBException;
-import org.jboss.seam.solder.core.Veto;
 import pl.softwaremill.jozijug.joziawsdemo.MessageMappingConstants;
 import pl.softwaremill.jozijug.joziawsdemo.entity.Message;
 import pl.softwaremill.jozijug.joziawsdemo.service.AWS;
@@ -40,9 +39,9 @@ public class SDBMessageAdder implements MessageAdder {
         attrs.put(MessageMappingConstants.ROOM, msg.getRoom());
         attrs.put(MessageMappingConstants.CONTENT, msg.getContent());
         attrs.put(MessageMappingConstants.DATE,
-                dateFormatter.getDateFormat().format(msg.getDate()));
+                dateFormatter.formatDate(msg.getDate()));
         attrs.put(MessageMappingConstants.SAVE_DATE,
-                dateFormatter.getDateFormat().format(msg.getSaveDate()));
+                dateFormatter.formatDate(msg.getSaveDate()));
 
         try {
             String itemId = msg.getUuid();

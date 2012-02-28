@@ -71,12 +71,6 @@
         </dependency>
 
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.16</version>
-        </dependency>
-
-        <dependency>
             <groupId>pl.softwaremill.common</groupId>
             <artifactId>softwaremill-sqs</artifactId>
         </dependency>
@@ -117,6 +111,19 @@
         </dependency>
 
     </dependencies>
+
+    <repositories>
+        <repository>
+            <id>softwaremill-snapshots</id>
+            <name>SoftwareMill Snapshots</name>
+            <url>http://tools.softwaremill.pl/nexus/content/repositories/snapshots</url>
+        </repository>
+        <repository>
+            <id>softwaremill-releases</id>
+            <name>SoftwareMill Releases</name>
+            <url>http://tools.softwaremill.pl/nexus/content/repositories/releases</url>
+        </repository>
+    </repositories>
 
     <profiles>
         <profile>

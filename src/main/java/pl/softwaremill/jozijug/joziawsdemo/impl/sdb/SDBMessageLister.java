@@ -7,8 +7,6 @@ import pl.softwaremill.jozijug.joziawsdemo.service.AWS;
 import pl.softwaremill.jozijug.joziawsdemo.service.MessagesLister;
 
 import javax.inject.Inject;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -62,17 +60,13 @@ public class SDBMessageLister implements MessagesLister {
     }
 
     private Message convertItemToMessage(Item item) {
-        try {
-            return new Message(
-                    UUID.fromString(item.getIdentifier()),
-                    item.getAttribute(ROOM),
-                    item.getAttribute(CONTENT),
-                    dateFormatter.getDateFormat().parse(item.getAttribute(DATE)),
-                    dateFormatter.getDateFormat().parse(item.getAttribute(SAVE_DATE))
-            );
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
+        return new Message(
+                UUID.fromString(item.getIdentifier()),
+                item.getAttribute(ROOM),
+                item.getAttribute(CONTENT),
+                dateFormatter.parseDate(item.getAttribute(DATE)),
+                dateFormatter.parseDate(item.getAttribute(SAVE_DATE))
+        );
     }
 
 }
